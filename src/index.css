@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Kinetic Slate (Light) */
+    --color-surface: #f8f9ff;
+    --color-surface-dim: #cbdbf5;
+    --color-surface-bright: #ffffff;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f1f5f9;
+    --color-surface-container: #e5eeff;
+    --color-surface-container-high: #dce9ff;
+    --color-surface-container-highest: #e2e8f0;
+    --color-on-surface: #0b1c30;
+    --color-on-surface-variant: #3d4a42;
+    --color-primary: #006948;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #00855d;
+    --color-on-primary-container: #f5fff7;
+    --color-primary-fixed-dim: #006948;
+    --color-secondary: #006591;
+    --color-secondary-container: #39b8fd;
+    --color-secondary-fixed: #006591;
+    --color-secondary-fixed-dim: #89ceff;
+    --color-tertiary: #994100;
+    --color-tertiary-container: #c05400;
+    --color-tertiary-fixed-dim: #ffb690;
+    --color-outline: #6d7a72;
+    --color-outline-variant: #bccac0;
+  }
+
+  .dark {
+    /* Obsidian Kinetic (Dark) */
+    --color-surface: #11131b;
+    --color-surface-dim: #11131b;
+    --color-surface-bright: #373942;
+    --color-surface-container-lowest: #0c0e16;
+    --color-surface-container-low: #191b23;
+    --color-surface-container: #1d1f28;
+    --color-surface-container-high: #282a32;
+    --color-surface-container-highest: #33343d;
+    --color-on-surface: #e1e1ed;
+    --color-on-surface-variant: #b9cbb9;
+    --color-primary: #f1ffef;
+    --color-on-primary: #003919;
+    --color-primary-container: #00ff87;
+    --color-on-primary-container: #007138;
+    --color-primary-fixed-dim: #00e478;
+    --color-secondary: #ffb95f;
+    --color-secondary-container: #ee9800;
+    --color-secondary-fixed: #ffddb8;
+    --color-secondary-fixed-dim: #ffb95f;
+    --color-tertiary: #f8fbff;
+    --color-tertiary-container: #bae4ff;
+    --color-tertiary-fixed-dim: #7bd0ff;
+    --color-outline: #849585;
+    --color-outline-variant: #3b4b3d;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Safe Area Insets for Mobile */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Custom scrollbar concealment for native mobile feel */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Material Symbols integration */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Shimmer & Pulse animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 255, 135, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(0, 255, 135, 0.85);
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite ease-in-out;
+}

@@ -1,0 +1,16 @@
+{
+  "short_name": "AetherFit",
+  "name": "AetherFit RPG - Gamified Fitness Tracker",
+  "icons": [
+    {
+      "src": "/assets/anatomy_diagram.png",
+      "type": "image/png",
+      "sizes": "800x800"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#11131b",
+  "theme_color": "#11131b",
+  "display": "standalone",
+  "orientation": "portrait"
+}

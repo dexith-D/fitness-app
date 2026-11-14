@@ -1,0 +1,48 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        surface: 'var(--color-surface)',
+        'surface-dim': 'var(--color-surface-dim)',
+        'surface-bright': 'var(--color-surface-bright)',
+        'surface-container-lowest': 'var(--color-surface-container-lowest)',
+        'surface-container-low': 'var(--color-surface-container-low)',
+        'surface-container': 'var(--color-surface-container)',
+        'surface-container-high': 'var(--color-surface-container-high)',
+        'surface-container-highest': 'var(--color-surface-container-highest)',
+        'on-surface': 'var(--color-on-surface)',
+        'on-surface-variant': 'var(--color-on-surface-variant)',
+        primary: 'var(--color-primary)',
+        'on-primary': 'var(--color-on-primary)',
+        'primary-container': 'var(--color-primary-container)',
+        'on-primary-container': 'var(--color-on-primary-container)',
+        'primary-fixed-dim': 'var(--color-primary-fixed-dim)',
+        secondary: 'var(--color-secondary)',
+        'secondary-container': 'var(--color-secondary-container)',
+        'secondary-fixed': 'var(--color-secondary-fixed)',
+        'secondary-fixed-dim': 'var(--color-secondary-fixed-dim)',
+        tertiary: 'var(--color-tertiary)',
+        'tertiary-container': 'var(--color-tertiary-container)',
+        'tertiary-fixed-dim': 'var(--color-tertiary-fixed-dim)',
+        outline: 'var(--color-outline)',
+        'outline-variant': 'var(--color-outline-variant)',
+        error: '#ffb4ab',
+        'error-container': '#93000a',
+      },
+      fontFamily: {
+        headline: ['"Space Grotesk"', 'sans-serif'],
+        body: ['Geist', 'Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+      boxShadow: {
+        'neon-glow': '0 0 20px -3px rgba(0, 255, 135, 0.45)',
+        'amber-glow': '0 0 16px rgba(238, 152, 0, 0.3)',
+        'cyan-glow': '0 0 16px rgba(123, 208, 255, 0.35)',
+      },
+    },
+  },
+  plugins: [],
+};
