@@ -32,6 +32,11 @@ interface GameContextType {
     oldRank: string;
     newRank: string;
     pointsAwarded: number;
+    tierName?: string;
+    tierNumber?: number;
+    tierLevel?: number;
+    focus?: string;
+    unlock?: string;
   } | null;
   selectedMuscleId: string | null;
   setSelectedMuscleId: (id: string | null) => void;
@@ -138,6 +143,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     oldRank: string;
     newRank: string;
     pointsAwarded: number;
+    tierName?: string;
+    tierNumber?: number;
+    tierLevel?: number;
+    focus?: string;
+    unlock?: string;
   } | null>(null);
 
   // Sync theme with DOM
@@ -339,6 +349,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         oldRank: progression.oldRank,
         newRank: progression.newRank,
         pointsAwarded: progression.levelsGained * 2,
+        tierName: progression.newTierName,
+        tierNumber: progression.newTierNumber,
+        tierLevel: progression.newTierLevel,
+        focus: progression.focus,
+        unlock: progression.unlock,
       });
 
       setTimeout(() => {
@@ -370,12 +385,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       rankTitle: progression.newRank,
     }));
 
-    confetti({
-      particleCount: 60,
-      spread: 50,
-      origin: { y: 0.7 },
-      colors: ['#00ff87', '#ffb95f'],
-    });
+    if (progression.leveledUp) {
+      setLevelUpData({
+        oldLevel: userStats.level,
+        newLevel: progression.newLevel,
+        oldRank: progression.oldRank,
+        newRank: progression.newRank,
+        pointsAwarded: progression.levelsGained * 2,
+        tierName: progression.newTierName,
+        tierNumber: progression.newTierNumber,
+        tierLevel: progression.newTierLevel,
+        focus: progression.focus,
+        unlock: progression.unlock,
+      });
+      setIsLevelUpModalOpen(true);
+    }
   };
 
   const closeLevelUpModal = () => {

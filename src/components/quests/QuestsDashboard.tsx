@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import { useGame } from '../../context/GameContext';
-import { formatXP } from '../../utils/levelCalculator';
+import { formatXP, getLevelInfo } from '../../utils/levelCalculator';
 
 interface QuestsDashboardProps {
   onOpenCreateQuest: () => void;
@@ -16,6 +16,8 @@ export const QuestsDashboard: React.FC<QuestsDashboardProps> = ({ onOpenCreateQu
     Math.round((userStats.currentXP / userStats.xpToNextLevel) * 100)
   );
   const xpNeeded = Math.max(0, userStats.xpToNextLevel - userStats.currentXP);
+  const currentLevelInfo = getLevelInfo(userStats.level);
+  const nextLevelInfo = userStats.level < 15 ? getLevelInfo(userStats.level + 1) : null;
 
   const recommendedQuest =
     quests.find((q) => q.category === 'recommended' && !q.completed) ||
@@ -38,8 +40,8 @@ export const QuestsDashboard: React.FC<QuestsDashboardProps> = ({ onOpenCreateQu
               <span className="font-headline text-base text-on-surface font-bold block leading-tight">
                 {userStats.name}
               </span>
-              <span className="font-mono text-[11px] text-on-surface-variant">
-                {userStats.rankTitle}
+              <span className="font-mono text-[11px] text-primary-fixed-dim font-bold">
+                Tier {currentLevelInfo.tierNumber}: {userStats.rankTitle}
               </span>
             </div>
           </div>
@@ -75,7 +77,9 @@ export const QuestsDashboard: React.FC<QuestsDashboardProps> = ({ onOpenCreateQu
           </div>
 
           <div className="flex justify-between items-center font-mono text-[11px] text-outline pt-0.5">
-            <span>Next Goal: Level {userStats.level + 1}</span>
+            <span>
+              Next Goal: {nextLevelInfo ? `Lvl ${nextLevelInfo.level} (${nextLevelInfo.title})` : 'The Atlas (Max)'}
+            </span>
             <span className="text-primary-container font-medium">{formatXP(xpNeeded)} XP needed</span>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGame } from '../../context/GameContext';
 import { Sun, Moon, Clock, CheckCircle2, Flame } from 'lucide-react';
+import { getLevelInfo } from '../../utils/levelCalculator';
 
 interface AvatarCustomizationModalProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ export const AvatarCustomizationModal: React.FC<AvatarCustomizationModalProps> =
     }, 1000);
     return () => clearInterval(timer);
   }, [isOpen, sessionStartTime]);
+
+  const levelInfo = getLevelInfo(userStats.level);
 
   if (!isOpen) return null;
 
@@ -54,7 +57,7 @@ export const AvatarCustomizationModal: React.FC<AvatarCustomizationModalProps> =
           <div>
             <h2 className="font-headline text-base font-bold text-on-surface">User Profile</h2>
             <span className="font-mono text-[10px] text-on-surface-variant">
-              Level {userStats.level} • {userStats.rankTitle}
+              Tier {levelInfo.tierNumber} • Lvl {userStats.level} • {userStats.rankTitle}
             </span>
           </div>
           <button
@@ -80,7 +83,7 @@ export const AvatarCustomizationModal: React.FC<AvatarCustomizationModalProps> =
 
           <div className="font-headline text-sm font-bold text-on-surface">{userStats.name}</div>
           <div className="font-mono text-[10px] text-primary-fixed-dim uppercase tracking-wider">
-            {userStats.rankTitle}
+            Tier {levelInfo.tierNumber}: {userStats.rankTitle}
           </div>
 
           <div className="flex items-center gap-2 mt-2 font-mono text-[10px] text-on-surface-variant">

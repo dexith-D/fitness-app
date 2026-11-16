@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGame } from '../../context/GameContext';
 import { NavTab } from '../../types';
+import { getLevelInfo } from '../../utils/levelCalculator';
 
 interface TopBarProps {
   onOpenAvatarModal?: () => void;
@@ -24,6 +25,8 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenAvatarModal }) => {
     }
   };
 
+  const levelInfo = getLevelInfo(userStats.level);
+
   return (
     <header className="sticky top-0 w-full z-40 pt-9 pb-2 px-4 bg-surface-container-lowest/85 backdrop-blur-xl border-b border-outline-variant/20 shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
       <div className="h-12 flex items-center justify-between gap-2">
@@ -37,7 +40,7 @@ export const TopBar: React.FC<TopBarProps> = ({ onOpenAvatarModal }) => {
               {getTabTitle(currentTab)}
             </h1>
             <span className="font-mono text-[10px] uppercase tracking-wider text-primary-fixed-dim truncate">
-              {userStats.rankTitle} • Lvl {userStats.level}
+              Tier {levelInfo.tierNumber}: {userStats.rankTitle} • Lvl {userStats.level}
             </span>
           </div>
         </div>

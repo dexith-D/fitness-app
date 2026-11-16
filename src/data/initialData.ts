@@ -4,12 +4,12 @@ export const initialUserStats: UserStats = {
   name: 'Alex',
   avatarUrl:
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-  level: 24,
-  currentXP: 3450,
-  xpToNextLevel: 4000,
+  level: 6,
+  currentXP: 1820,
+  xpToNextLevel: 5000,
   totalXP: 14820,
   dayStreak: 18,
-  rankTitle: 'Iron Vanguard I',
+  rankTitle: 'Tension Seeker',
   workoutsCompleted: 18,
   statPoints: 2,
   attributes: {

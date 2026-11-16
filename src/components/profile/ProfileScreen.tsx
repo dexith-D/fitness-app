@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useGame } from '../../context/GameContext';
-import { Sun, Moon, Clock, CheckCircle2, Flame, Trophy, Award } from 'lucide-react';
+import {
+  Sun,
+  Moon,
+  Clock,
+  CheckCircle2,
+  Flame,
+  Trophy,
+  Award,
+  Target,
+  Gift,
+  Lock,
+  Check,
+} from 'lucide-react';
+import { getLevelInfo, LEVEL_TIERS } from '../../utils/levelCalculator';
 
 export const ProfileScreen: React.FC = () => {
   const { userStats, quests, theme, setTheme, sessionStartTime, totalLoginSeconds } = useGame();
+  const [selectedTierTab, setSelectedTierTab] = useState<number>(2); // Default to Tier 2 where Alex starts
 
   // Live session elapsed seconds
   const [sessionSeconds, setSessionSeconds] = useState<number>(() => {
@@ -16,6 +30,13 @@ export const ProfileScreen: React.FC = () => {
     }, 1000);
     return () => clearInterval(timer);
   }, [sessionStartTime]);
+
+  const currentLevelInfo = getLevelInfo(userStats.level);
+
+  // Set the default selected tier tab to the player's current tier on load
+  useEffect(() => {
+    setSelectedTierTab(currentLevelInfo.tierNumber);
+  }, [currentLevelInfo.tierNumber]);
 
   // Format session time as "Xh Ym Zs" or "Xm Ys"
   const formatLiveDuration = (totalSecs: number) => {
@@ -42,6 +63,16 @@ export const ProfileScreen: React.FC = () => {
     Math.round((userStats.currentXP / userStats.xpToNextLevel) * 100)
   );
 
+  const tiersSummary = [
+    { number: 1, name: 'Chalk Dust', subtitle: 'Learning the Mechanics' },
+    { number: 2, name: 'Tension Seeker', subtitle: 'Managing Fatigue' },
+    { number: 3, name: 'Iron Forged', subtitle: 'Consistency & Heavy Loads' },
+    { number: 4, name: 'Gravity Breaker', subtitle: 'Elite Execution' },
+    { number: 5, name: 'Atlas', subtitle: 'Absolute Mastery' },
+  ];
+
+  const levelsInSelectedTier = LEVEL_TIERS.filter((l) => l.tierNumber === selectedTierTab);
+
   return (
     <div className="flex-1 w-full overflow-y-auto pb-24 px-4 pt-3 space-y-4">
       {/* 1. User Identity & Rank Hero Card */}
@@ -66,12 +97,20 @@ export const ProfileScreen: React.FC = () => {
                 {userStats.name}
               </h2>
               <span className="font-mono text-[10px] px-2 py-0.5 rounded-full bg-primary-container/20 text-primary-container border border-primary-container/30 font-bold shrink-0">
-                Lv. {userStats.level}
+                Lvl {userStats.level}
               </span>
             </div>
-            <p className="font-mono text-xs text-primary-fixed-dim uppercase tracking-wider truncate">
-              {userStats.rankTitle}
-            </p>
+
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="font-mono text-[11px] font-bold text-primary-container">
+                Tier {currentLevelInfo.tierNumber}: {currentLevelInfo.tierName}
+              </span>
+              <span className="text-on-surface-variant text-[10px]">•</span>
+              <span className="font-mono text-[11px] text-secondary font-bold truncate">
+                {userStats.rankTitle}
+              </span>
+            </div>
+
             <div className="flex items-center gap-2 mt-1 text-[11px] font-mono text-on-surface-variant">
               <span className="flex items-center gap-1">
                 <Flame className="w-3.5 h-3.5 text-secondary" />
@@ -89,7 +128,7 @@ export const ProfileScreen: React.FC = () => {
         {/* Level XP Progress Bar */}
         <div className="mt-4 pt-3 border-t border-outline-variant/20">
           <div className="flex justify-between items-center text-[11px] font-mono mb-1.5">
-            <span className="text-on-surface-variant">Experience Progress</span>
+            <span className="text-on-surface-variant">Progress to Level {Math.min(15, userStats.level + 1)}</span>
             <span className="text-on-surface font-bold">
               {userStats.currentXP.toLocaleString()} / {userStats.xpToNextLevel.toLocaleString()} XP ({xpPercentage}%)
             </span>
@@ -99,6 +138,29 @@ export const ProfileScreen: React.FC = () => {
               className="h-full rounded-full bg-gradient-to-r from-primary-container to-secondary-container transition-all duration-500 shadow-neon-glow"
               style={{ width: `${xpPercentage}%` }}
             ></div>
+          </div>
+        </div>
+
+        {/* Current Active Focus & Unlock Perk */}
+        <div className="mt-3 pt-2.5 border-t border-outline-variant/15 space-y-1.5 text-xs font-mono">
+          <div className="flex items-start gap-2 bg-surface-container-lowest/80 p-2 rounded-xl border border-outline-variant/15">
+            <Target className="w-3.5 h-3.5 text-primary-container shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-[10px] text-primary-container font-bold uppercase block">Current Tier Focus</span>
+              <p className="text-[11px] text-on-surface-variant font-body leading-tight">
+                {currentLevelInfo.focus}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-2 bg-surface-container-lowest/80 p-2 rounded-xl border border-outline-variant/15">
+            <Gift className="w-3.5 h-3.5 text-secondary shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <span className="text-[10px] text-secondary font-bold uppercase block">Unlocked Level Perk</span>
+              <p className="text-[11px] text-on-surface-variant font-body leading-tight">
+                {currentLevelInfo.unlock}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -123,7 +185,146 @@ export const ProfileScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Logged In Time Section */}
+      {/* 2. Interactive RPG Tier Roadmap & Level Breakdown */}
+      <div className="w-full bg-surface-container-low p-4 rounded-3xl border border-outline-variant/25 shadow-md space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container border border-primary-container/20">
+              <Award className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="font-headline text-sm font-bold text-on-surface">Progression Roadmap</h3>
+              <p className="text-[10px] font-mono text-on-surface-variant">5 Tiers • 15 Mastery Levels</p>
+            </div>
+          </div>
+          <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold">
+            Level {userStats.level} / 15
+          </span>
+        </div>
+
+        {/* Tier Selector Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar">
+          {tiersSummary.map((tier) => {
+            const isCurrent = currentLevelInfo.tierNumber === tier.number;
+            const isSelected = selectedTierTab === tier.number;
+            const isCompleted = userStats.level > tier.number * 3;
+
+            return (
+              <button
+                key={tier.number}
+                onClick={() => setSelectedTierTab(tier.number)}
+                className={`flex-1 min-w-[70px] py-1.5 px-2 rounded-xl font-mono text-[10px] flex flex-col items-center justify-center border transition-all ${
+                  isSelected
+                    ? 'bg-primary-container text-surface-container-lowest font-bold shadow-neon-glow border-primary-container'
+                    : isCurrent
+                    ? 'bg-surface-container-high text-primary-container font-semibold border-primary-container/40'
+                    : isCompleted
+                    ? 'bg-surface-container-lowest text-on-surface border-outline-variant/30'
+                    : 'bg-surface-container-lowest/60 text-outline border-outline-variant/20'
+                }`}
+              >
+                <span>T{tier.number}</span>
+                <span className="text-[8px] truncate max-w-[65px] opacity-90">
+                  {tier.name.split(' ')[0]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Selected Tier Banner */}
+        <div className="p-2.5 rounded-2xl bg-surface-container-lowest border border-outline-variant/20 flex items-center justify-between">
+          <div>
+            <span className="text-[10px] font-mono text-primary-fixed-dim uppercase tracking-wider font-bold">
+              Tier {selectedTierTab}: {tiersSummary[selectedTierTab - 1].name}
+            </span>
+            <p className="text-[11px] text-on-surface-variant font-body">
+              {tiersSummary[selectedTierTab - 1].subtitle}
+            </p>
+          </div>
+          <span className="font-mono text-[10px] text-outline">
+            Levels {(selectedTierTab - 1) * 3 + 1} – {selectedTierTab * 3}
+          </span>
+        </div>
+
+        {/* Level List inside Selected Tier */}
+        <div className="space-y-2 pt-1 font-mono text-xs">
+          {levelsInSelectedTier.map((lvl) => {
+            const isUserLevel = userStats.level === lvl.level;
+            const isUnlocked = userStats.level >= lvl.level;
+
+            return (
+              <div
+                key={lvl.level}
+                className={`p-3 rounded-2xl border transition-all ${
+                  isUserLevel
+                    ? 'bg-surface-container-high border-primary-container/60 shadow-md ring-1 ring-primary-container/30'
+                    : isUnlocked
+                    ? 'bg-surface-container-lowest border-outline-variant/30'
+                    : 'bg-surface-container-lowest/50 border-outline-variant/15 opacity-70'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[11px] ${
+                        isUserLevel
+                          ? 'bg-primary-container text-surface-container-lowest'
+                          : isUnlocked
+                          ? 'bg-surface-container-high text-primary-container'
+                          : 'bg-surface-container text-outline'
+                      }`}
+                    >
+                      {lvl.level}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-headline font-bold text-on-surface text-xs">
+                          {lvl.title}
+                        </span>
+                        {isUserLevel && (
+                          <span className="text-[8px] bg-primary-container/20 text-primary-container px-1.5 rounded-full font-bold uppercase border border-primary-container/30">
+                            Current Rank
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-outline">
+                        {lvl.totalXP.toLocaleString()} XP Threshold
+                      </span>
+                    </div>
+                  </div>
+
+                  {isUserLevel ? (
+                    <span className="text-primary-container text-xs">★ Active</span>
+                  ) : isUnlocked ? (
+                    <span className="text-secondary flex items-center gap-0.5 text-[10px]">
+                      <Check className="w-3.5 h-3.5" /> Done
+                    </span>
+                  ) : (
+                    <span className="text-outline flex items-center gap-0.5 text-[10px]">
+                      <Lock className="w-3 h-3" /> Locked
+                    </span>
+                  )}
+                </div>
+
+                {/* Focus and Unlock Details */}
+                <div className="mt-2 pt-2 border-t border-outline-variant/15 space-y-1 text-[11px] font-body">
+                  <div className="flex items-start gap-1.5 text-on-surface-variant">
+                    <Target className="w-3.5 h-3.5 text-primary-container shrink-0 mt-0.5" />
+                    <span><strong className="text-on-surface">Focus:</strong> {lvl.focus}</span>
+                  </div>
+                  <div className="flex items-start gap-1.5 text-on-surface-variant">
+                    <Gift className="w-3.5 h-3.5 text-secondary shrink-0 mt-0.5" />
+                    <span><strong className="text-secondary">Unlock:</strong> {lvl.unlock}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. Logged In Time Section */}
       <div className="w-full bg-surface-container-low p-4 rounded-3xl border border-outline-variant/25 shadow-md space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -166,7 +367,7 @@ export const ProfileScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Number of Tasks Completed Section */}
+      {/* 4. Number of Tasks Completed Section */}
       <div className="w-full bg-surface-container-low p-4 rounded-3xl border border-outline-variant/25 shadow-md space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -243,7 +444,7 @@ export const ProfileScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. Light and Dark Theme Switcher Section */}
+      {/* 5. Light and Dark Theme Switcher Section */}
       <div className="w-full bg-surface-container-low p-4 rounded-3xl border border-outline-variant/25 shadow-md space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container border border-primary-container/20">
@@ -287,7 +488,7 @@ export const ProfileScreen: React.FC = () => {
         </p>
       </div>
 
-      {/* 5. Unlocked Badges Showcase */}
+      {/* 6. Unlocked Badges Showcase */}
       <div className="w-full bg-surface-container-low p-4 rounded-3xl border border-outline-variant/25 shadow-md space-y-2.5">
         <div className="flex items-center gap-2">
           <Award className="w-4 h-4 text-primary-container" />
